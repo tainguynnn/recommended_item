@@ -5,933 +5,582 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tài's tech choices</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* Sử dụng font Inter */
-      body {
-        font-family: 'Inter', sans-serif;
-        /* Màu nền chính - Light Blue/Off-white */
-        background-color: #edf6f9;
-      }
-      /* --- Carousel Styles --- */
-      .carousel-container {
-        position: relative;
-      }
-      .carousel {
-        display: flex;
-        overflow-x: auto;
-        scroll-behavior: smooth;
-        scrollbar-width: none; /* Ẩn thanh cuộn cho Firefox */
-        -ms-overflow-style: none; /* Ẩn thanh cuộn cho IE/Edge */
-        padding: 1rem 0; /* Thêm padding trên dưới cho carousel */
-        gap: 1rem; /* Khoảng cách giữa các card */
-        scroll-snap-type: x mandatory; /* Bắt buộc snap khi cuộn */
-      }
-      .carousel::-webkit-scrollbar {
-        display: none; /* Ẩn thanh cuộn cho Chrome/Safari/Opera */
-      }
-      .carousel-item {
-        flex: 0 0 auto; /* Không co giãn, không thu nhỏ, kích thước tự động */
-        width: 280px; /* Chiều rộng cố định cho mỗi card sản phẩm */
-        scroll-snap-align: start; /* Snap vào đầu card */
-        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng khi hover */
-        /* Nền trắng cho card */
-        background-color: #ffffff;
-        padding: 1.25rem; /* p-5 */
-        border-radius: 0.75rem; /* rounded-xl - bo tròn nhiều hơn */
-        /* Viền màu Medium Teal */
-        border: 1px solid #83c5be;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* Shadow nhẹ */
-        display: flex; /* Use flexbox for layout */
-        flex-direction: column; /* Stack elements vertically */
-        justify-content: space-between; /* Push button to bottom */
-      }
-       .carousel-item:hover {
-         transform: translateY(-5px); /* Nhấc card lên một chút khi hover */
-         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07); /* Shadow rõ hơn khi hover */
-       }
-       .carousel-item-content {
-           flex-grow: 1; /* Allow content to grow */
-       }
-      .carousel-button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        /* Nền trắng */
-        background-color: #ffffff;
-        /* Màu icon Dark Teal (sẽ được ghi đè bởi filter) */
-        color: #006d77;
-        border: 1px solid #83c5be; /* Viền Medium Teal */
-        border-radius: 50%;
-        width: 44px; /* Tăng kích thước nút */
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 10;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* Tăng shadow */
-        transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      }
-      .carousel-button:hover {
-        /* Nền Medium Teal khi hover */
-        background-color: #83c5be;
-        /* Màu icon trắng khi hover (sẽ được ghi đè bởi filter) */
-        color: #ffffff;
-        border-color: #006d77; /* Viền Dark Teal khi hover */
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      }
-      .carousel-button.left {
-        left: -20px; /* Đẩy nút ra xa hơn */
-      }
-      .carousel-button.right {
-        right: -20px; /* Đẩy nút ra xa hơn */
-      }
-      /* Thêm khoảng cách giữa các section */
-      section:not(:last-child) {
-        margin-bottom: 4rem; /* Tăng khoảng cách */
-      }
-      /* Đảm bảo SVG trong nút được căn chỉnh và có màu đúng */
-      .carousel-button img {
-        width: 1.5rem; /* w-6 */
-        height: 1.5rem; /* h-6 */
-        /* Lọc màu SVG để phù hợp với màu text của nút cha */
-        /* Filter này tạo màu gần giống #006d77 */
-        filter: invert(25%) sepia(39%) saturate(2059%) hue-rotate(140deg) brightness(94%) contrast(101%);
-      }
-      .carousel-button:hover img {
-         /* Filter này tạo màu trắng */
-         filter: brightness(0) invert(1);
-      }
-       /* Style cho tiêu đề section */
-      h2 {
-        /* Màu Dark Teal */
-        color: #006d77;
-        border-bottom-color: #83c5be; /* Viền dưới Medium Teal */
-      }
-      /* Style cho icon SVG trong tiêu đề */
-      h2 img {
-         width: 1.75rem; /* w-7 */
-         height: 1.75rem; /* h-7 */
-         margin-right: 0.75rem; /* mr-3 */
-         vertical-align: middle;
-         display: inline-block;
-         /* Lọc màu SVG để phù hợp với màu text của h2 (#006d77) */
-         filter: invert(25%) sepia(39%) saturate(2059%) hue-rotate(140deg) brightness(94%) contrast(101%);
-      }
-      /* Style cho nút xem chi tiết */
-      .detail-button {
-         /* Nền Dark Teal */
-         background-color: #006d77;
-         /* Chữ màu Light Blue/Off-white */
-         color: #edf6f9;
-         display: inline-block; /* Ensure it behaves like a block for margin */
-         margin-top: auto; /* Push button down in flex container */
-      }
-      .detail-button:hover {
-         /* Nền Medium Teal khi hover */
-         background-color: #83c5be;
-         /* Chữ màu Dark Teal khi hover */
-         color: #006d77;
-      }
-
-    </style>
-     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Main background color - Light Blue/Off-white */
+            background-color: #edf6f9;
+        }
+
+        /* --- Carousel Styles --- */
+        .carousel-container {
+            position: relative;
+        }
+
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+            -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+            padding: 1rem 0; /* Add top/bottom padding for carousel */
+            gap: 1rem; /* Space between cards */
+            scroll-snap-type: x mandatory; /* Mandatory snap when scrolling */
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome/Safari/Opera */
+        }
+
+        .carousel-item {
+            flex: 0 0 auto; /* No grow, no shrink, auto size */
+            width: 280px; /* Fixed width for each product card */
+            scroll-snap-align: start; /* Snap to the start of the card */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effect */
+            /* White background for card (fallback) */
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl - more rounded */
+            /* Medium Teal border */
+            border: 1px solid #83c5be;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* Light shadow */
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack elements vertically */
+            justify-content: space-between; /* Push button to bottom */
+            position: relative; /* Needed for overlay and background image */
+            overflow: hidden; /* Hide overflowing background */
+            background-size: cover; /* Cover the entire card */
+            background-position: center; /* Center the background image */
+            min-height: 200px; /* Ensure minimum height for visibility */
+            padding: 0; /* Remove padding to allow background full bleed */
+        }
+
+        .carousel-item::before { /* Overlay for text readability */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            z-index: 1;
+            border-radius: 0.75rem; /* Match parent's border-radius */
+            transition: background-color 0.3s ease; /* Smooth transition for overlay */
+        }
+         .carousel-item:hover::before {
+             background-color: rgba(0, 0, 0, 0.3); /* Lighter overlay on hover */
+         }
+
+        .carousel-item:hover {
+            transform: translateY(-5px); /* Lift card slightly on hover */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.07); /* Clearer shadow on hover */
+        }
+
+        .carousel-item-content {
+            flex-grow: 1; /* Allow content to grow */
+            position: relative; /* Position above overlay */
+            z-index: 2; /* Above overlay */
+            padding: 1.25rem; /* Restore padding for content */
+            color: #ffffff; /* White text for better contrast on overlay */
+        }
+        .carousel-item-content h3 {
+             color: #ffffff; /* Ensure title is white */
+             font-weight: 600; /* Make title slightly bolder */
+        }
+         .carousel-item-content p {
+             color: #e2e8f0; /* Lighter gray for description */
+             text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Add text shadow for readability */
+        }
+
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            /* White background */
+            background-color: #ffffff;
+            /* Dark Teal icon color (will be overridden by filter) */
+            color: #006d77;
+            border: 1px solid #83c5be; /* Medium Teal border */
+            border-radius: 50%;
+            width: 44px; /* Increased button size */
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* Increased shadow */
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .carousel-button:hover {
+            /* Medium Teal background on hover */
+            background-color: #83c5be;
+            /* White icon color on hover (will be overridden by filter) */
+            color: #ffffff;
+            border-color: #006d77; /* Dark Teal border on hover */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .carousel-button.left {
+            left: -20px; /* Push button further out */
+        }
+
+        .carousel-button.right {
+            right: -20px; /* Push button further out */
+        }
+
+        /* Add space between sections */
+        section:not(:last-child) {
+            margin-bottom: 4rem; /* Increased spacing */
+        }
+
+        /* Ensure SVG in button is aligned and colored correctly */
+        .carousel-button img {
+            width: 1.5rem; /* w-6 */
+            height: 1.5rem; /* h-6 */
+            /* Filter SVG color to match parent button's text color */
+            /* This filter creates a color close to #006d77 */
+            filter: invert(25%) sepia(39%) saturate(2059%) hue-rotate(140deg) brightness(94%) contrast(101%);
+        }
+
+        .carousel-button:hover img {
+            /* This filter creates white color */
+            filter: brightness(0) invert(1);
+        }
+
+        /* Style for section titles */
+        h2 {
+            /* Dark Teal color */
+            color: #006d77;
+            border-bottom-color: #83c5be; /* Medium Teal bottom border */
+        }
+
+        /* Style for SVG icon in title */
+        h2 img {
+            width: 1.75rem; /* w-7 */
+            height: 1.75rem; /* h-7 */
+            margin-right: 0.75rem; /* mr-3 */
+            vertical-align: middle;
+            display: inline-block;
+            /* Filter SVG color to match h2's text color (#006d77) */
+            filter: invert(25%) sepia(39%) saturate(2059%) hue-rotate(140deg) brightness(94%) contrast(101%);
+        }
+
+        /* Style for detail button */
+        .detail-button {
+            /* Dark Teal background */
+            background-color: #006d77;
+            /* Light Blue/Off-white text color */
+            color: #edf6f9;
+            display: inline-block; /* Ensure it behaves like a block for margin */
+            margin-top: auto; /* Push button down in flex container */
+            position: relative; /* Position above overlay */
+            z-index: 2; /* Above overlay */
+            margin-left: 1.25rem; /* Adjust position within card */
+            margin-bottom: 1.25rem; /* Adjust position within card */
+            margin-right: 1.25rem; /* Adjust position within card */
+            align-self: flex-start; /* Align button to the start */
+            text-align: center;
+        }
+
+        .detail-button:hover {
+            /* Medium Teal background on hover */
+            background-color: #83c5be;
+            /* Dark Teal text color on hover */
+            color: #006d77;
+        }
+
+        /* Fallback image styling */
+         .carousel-item img.fallback-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the area */
+            z-index: 0; /* Behind the overlay */
+            border-radius: 0.75rem; /* Match parent's border-radius */
+        }
+
+    </style>
 </head>
 <body class="text-gray-800">
 
     <header class="bg-[#006d77] text-[#edf6f9] p-6 shadow-md sticky top-0 z-20">
-        <div class="container mx-auto max-w-7xl"> <h1 class="text-3xl font-bold">Best choices của tài nguyễn</h1>
+        <div class="container mx-auto max-w-7xl">
+            <h1 class="text-3xl font-bold">Best choices của tài nguyễn</h1>
             <p class="mt-1 opacity-90">Can not go wrong</p>
         </div>
     </header>
 
-    <main class="container mx-auto max-w-7xl p-6 mt-8"> 
-        <!-- <section id="smartphones">
-            <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/smartphone.svg" alt="Biểu tượng điện thoại">
-                Điện thoại thông minh
-            </h2>
-            <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái">
-                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái">
-                </button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                        <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">iPhone 16 Pro Max (Tin đồn)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Chiếc iPhone được mong đợi nhất với nhiều cải tiến về camera, hiệu năng và thiết kế viền mỏng hơn.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Samsung Galaxy S25 Ultra (Tin đồn)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Đối thủ đáng gờm với bút S Pen, khả năng zoom ấn tượng và tích hợp sâu các tính năng AI mới.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Google Pixel 9 Pro (Tin đồn)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Nổi bật với khả năng nhiếp ảnh AI, trải nghiệm Android thuần túy và thiết kế mới lạ.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Xiaomi 15 Pro (Tin đồn)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Flagship từ Xiaomi hứa hẹn cấu hình mạnh mẽ, camera hợp tác Leica và sạc siêu nhanh.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">OnePlus 13 (Tin đồn)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Tập trung vào hiệu năng mượt mà, màn hình đẹp và sạc nhanh Warp Charge đặc trưng.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                </div>
-                <button class="carousel-button right" aria-label="Cuộn phải">
-                     <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải">
-                </button>
-            </div>
-        </section> -->
+    <main class="container mx-auto max-w-7xl p-6 mt-8">
 
         <section id="tablets">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
+            <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/tablet.svg" alt="Biểu tượng máy tính bảng">
                 Máy tính bảng
             </h2>
-             <div class="carousel-container">
+            <div class="carousel-container">
                 <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
                 <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Redmi Pad Pro</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Máy tính bảng tầm trung với màn hình lớn, cấu hình tốt.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3esyr91d9yt7b.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Redmi+Pad+Pro\' alt=\'Redmi Pad Pro Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Redmi Pad Pro</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Máy tính bảng tầm trung với màn hình lớn, cấu hình tốt.</p>
                         </div>
                         <a href="https://s.shopee.vn/1g57bUTdWD" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                    <!-- <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">iPad Air (M2)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Hiệu năng mạnh mẽ, thiết kế mỏng nhẹ, màn hình đẹp, hỗ trợ Apple Pencil Pro.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Samsung Galaxy Tab S9 FE</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Phiên bản Fan Edition giá tốt, màn hình lớn, bút S Pen đi kèm, kháng nước IP68.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div> -->
-                </div>
                 <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
             </div>
         </section>
 
-        <!-- <section id="laptops">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/laptop.svg" alt="Biểu tượng laptop">
-                Máy tính xách tay
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">MacBook Air M3</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Mỏng nhẹ, mạnh mẽ với chip M3, lý tưởng cho công việc văn phòng, học tập và giải trí cơ bản.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Dell XPS 15 (2025)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Thiết kế cao cấp, màn hình OLED tuyệt đẹp, hiệu năng mạnh mẽ cho người dùng sáng tạo.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Lenovo Yoga Slim 7 Pro X</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Cân bằng tốt giữa hiệu năng, tính di động và màn hình độ phân giải cao, phù hợp cho lập trình viên.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">HP Spectre x360 14</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Laptop 2-trong-1 sang trọng, màn hình cảm ứng xoay lật linh hoạt, bút cảm ứng đi kèm.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Asus ROG Zephyrus G16</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Laptop gaming mỏng nhẹ nhưng mạnh mẽ, màn hình tần số quét cao, thiết kế hiện đại.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section> -->
-
         <section id="headphones">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/headphones.svg" alt="Biểu tượng tai nghe">
-                 Tai nghe
+            <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
+                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/headphones.svg" alt="Biểu tượng tai nghe">
+                Tai nghe
             </h2>
-             <div class="carousel-container">
+            <div class="carousel-container">
                 <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
                 <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Supermix 4</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lwz9zuwfbv8bb1.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Supermix+4\' alt=\'Supermix 4 Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Supermix 4</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/7pfkvVhoz1" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Waner SG</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lj54wkbox6308e.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Waner+SG\' alt=\'Waner SG Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Waner S.G</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/4q29M2VTvT" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Truthear Gate</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/sg-11134201-7rdx9-lye3y6x9mxk20c.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Truthear+Gate\' alt=\'Truthear Gate Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Truthear Gate</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/8zriJsom1L" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">7Hz Salnotes Zero G1</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m3vzsiuvzelk63.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=7Hz+Zero+2\' alt=\'7Hz Salnotes Zero 2 Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">7Hz Salnotes Zero 2</h3> <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/4AmSZAGbmK" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Blon Z300</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m4og4e2gt7jkfc.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Blon+Z300\' alt=\'Blon Z300 Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Blon Z300</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/8pYI7lxth4" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Truthear Zero</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m29cw8x3wz3m5d.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Truthear+Zero\' alt=\'Truthear Zero Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Truthear Zero</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/7KjUL33HUL" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Moondrop Space Travel</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Tai nghe TWS giá rẻ, chất âm tốt trong tầm giá.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lnx3fsb3ub5911.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Moondrop+Space+Travel\' alt=\'Moondrop Space Travel Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Moondrop Space Travel</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Tai nghe TWS giá rẻ, chất âm tốt trong tầm giá.</p>
                         </div>
                         <a href="https://s.shopee.vn/706dwWSvdI" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Kefine Delci</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lx6s55l9zkyj9f.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Kefine+Delci\' alt=\'Kefine Delci Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Kefine Delci</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/8Kc1X00hc1" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Simgot EW200</h3> <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzel1x2fjn356a.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Simgot+EW200\' alt=\'Simgot EW200 Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Simgot EW200</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/3AtvNXoZGs" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Truthear Nova</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/sg-11134201-7repr-m81iz4su0ahha8.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Truthear+Nova\' alt=\'Truthear Nova Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Truthear Nova</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Sản phẩm được đề xuất.</p>
                         </div>
                         <a href="https://s.shopee.vn/1B8qzuupff" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <!-- <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Sony WH-1000XM5</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Vua chống ồn chủ động, chất âm tuyệt vời, thiết kế thoải mái, pin trâu.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">AirPods Pro 2 (USB-C)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Tích hợp hoàn hảo với hệ sinh thái Apple, chống ồn tốt, âm thanh không gian, cổng sạc USB-C tiện lợi.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div> -->
-                    </div>
+                </div>
                 <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
             </div>
         </section>
 
-         <section id="audio-devices">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/volume-2.svg" alt="Biểu tượng âm thanh">
-                 Thiết bị Âm thanh
+        <section id="audio-devices">
+            <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
+                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/volume-2.svg" alt="Biểu tượng âm thanh">
+                Thiết bị Âm thanh
             </h2>
-             <div class="carousel-container">
+            <div class="carousel-container">
                 <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
                 <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">DAC/Amp Hiby FC4</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Bộ giải mã và khuếch đại âm thanh di động.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-llu38best52712.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Hiby+FC4\' alt=\'Hiby FC4 Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">DAC/Amp Hiby FC4</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Bộ giải mã và khuếch đại âm thanh di động.</p>
                         </div>
                         <a href="https://s.shopee.vn/2LKoNabde0" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Loa Harman Kardon Onyx Studio 9</h3> <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Loa di động cao cấp với thiết kế độc đáo.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m7up4jp7em2b6c.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=HK+Onyx+Studio+9\' alt=\'Harman Kardon Onyx Studio 9 Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Loa Harman Kardon Onyx Studio 9</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Loa di động cao cấp với thiết kế độc đáo.</p>
                         </div>
                         <a href="https://s.shopee.vn/1LSHCiqTVk" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Loa Harman Kardon Aura Studio 4</h3> <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Loa Bluetooth để bàn với thiết kế trong suốt và ánh sáng.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-ljvlatfz5q0y8c.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=HK+Aura+Studio+4\' alt=\'Harman Kardon Aura Studio 4 Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Loa Harman Kardon Aura Studio 4</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Loa Bluetooth để bàn với thiết kế trong suốt và ánh sáng.</p>
                         </div>
                         <a href="https://s.shopee.vn/8Kc1XexXuc" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <!-- <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Sonos Arc Soundbar</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Soundbar Dolby Atmos cao cấp, âm thanh vòm sống động, thiết kế đẹp.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div> -->
                 </div>
                 <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
             </div>
         </section>
 
-        <!-- <section id="smartwatches">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/watch.svg" alt="Biểu tượng đồng hồ">
-                 Đồng hồ thông minh
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Apple Watch Series 9</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Theo dõi sức khỏe toàn diện, màn hình sáng, tính năng Double Tap tiện lợi, tích hợp sâu với iPhone.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Garmin Fenix 7 Pro</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Đỉnh cao cho người chơi thể thao chuyên nghiệp, pin siêu trâu, GPS chính xác, nhiều chế độ luyện tập.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Samsung Galaxy Watch 6 Classic</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Thiết kế viền xoay vật lý đặc trưng, hệ điều hành Wear OS mượt mà, nhiều tính năng sức khỏe.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Amazfit Balance</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Giá cả phải chăng, pin tốt, nhiều tính năng theo dõi sức khỏe và thể thao cơ bản.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Google Pixel Watch 2</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Thiết kế đẹp mắt, tích hợp Fitbit, trải nghiệm Wear OS thuần túy từ Google.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section> -->
-
-         <!-- <section id="cameras">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/camera.svg" alt="Biểu tượng máy ảnh">
-                 Máy ảnh
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Sony Alpha a7 IV</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Máy ảnh mirrorless full-frame đa năng, cân bằng tốt giữa chụp ảnh và quay video, hệ thống lấy nét đỉnh cao.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Fujifilm X-T5</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Thiết kế hoài cổ tuyệt đẹp, giả lập màu phim độc đáo, cảm biến APS-C độ phân giải cao.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Canon EOS R8</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Full-frame nhỏ gọn, giá cả phải chăng, dễ sử dụng, lựa chọn tốt cho người mới bắt đầu với full-frame.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Nikon Zf</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Kết hợp thiết kế cổ điển của máy phim Nikon với công nghệ mirrorless full-frame hiện đại.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Sony ZV-E10</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Máy ảnh APS-C nhỏ gọn, tối ưu cho vlogger với màn hình lật xoay, micro chất lượng tốt.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section> -->
-
         <section id="gaming">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/gamepad-2.svg" alt="Biểu tượng tay cầm game">
-                 Thiết bị chơi game
+            <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
+                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/gamepad-2.svg" alt="Biểu tượng tay cầm game">
+                Thiết bị chơi game
             </h2>
-             <div class="carousel-container">
+            <div class="carousel-container">
                 <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
                 <div class="carousel">
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Tay cầm 8BitDo 2C</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Tay cầm chơi game không dây, thiết kế cổ điển.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/cn-11134207-7ras8-m3vy7afr5q5236.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=8BitDo+Controller\' alt=\'8BitDo Controller Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                             <h3 class="text-lg font-medium">Tay cầm 8BitDo Ultimate C 2.4G</h3> <p class="text-sm my-2 h-16 overflow-hidden">Tay cầm chơi game không dây, thiết kế cổ điển.</p>
                         </div>
                         <a href="https://s.shopee.vn/AKN5vVXwhg" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Máy chơi game Trimui Smart Pro</h3> <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Máy chơi game cầm tay giả lập.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2q5hz7di4l676.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Trimui+Smart+Pro\' alt=\'Trimui Smart Pro Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Máy chơi game Trimui Smart Pro</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Máy chơi game cầm tay giả lập.</p>
                         </div>
                         <a href="https://s.shopee.vn/VtADkfAKA" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <!-- <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">PlayStation 5 Slim</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Phiên bản mỏng nhẹ, hiệu năng mạnh mẽ, kho game độc quyền chất lượng, tay cầm DualSense ấn tượng.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Nintendo Switch OLED</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Màn hình OLED rực rỡ, chơi game linh hoạt (cầm tay/dock), thư viện game độc đáo cho mọi lứa tuổi.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Xbox Series X</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Console mạnh mẽ nhất thị trường, tối ưu cho Game Pass với hàng trăm game, hiệu năng 4K mượt mà.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div> -->
-                    </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section>
-
-        <!-- <section id="smart-home">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/home.svg" alt="Biểu tượng nhà thông minh">
-                 Nhà thông minh
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Google Nest Hub (2nd gen)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Trung tâm điều khiển nhà thông minh bằng giọng nói và màn hình cảm ứng, tích hợp loa, theo dõi giấc ngủ.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Philips Hue Starter Kit</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Bộ đèn thông minh chất lượng cao, dễ dàng thay đổi màu sắc, độ sáng, tạo ngữ cảnh ánh sáng đa dạng.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Aqara Hub M2 & Sensors</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Hệ sinh thái nhà thông minh giá cả phải chăng, đa dạng cảm biến (cửa, chuyển động, nhiệt độ), hỗ trợ Matter.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Eufy Security Camera System</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Hệ thống camera an ninh không dây, pin lâu, chất lượng hình ảnh tốt, lưu trữ nội bộ hoặc đám mây.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Robot hút bụi Roborock S8 Pro Ultra</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Robot hút bụi lau nhà cao cấp, tự động giặt giẻ, sấy khô, đổ rác, lực hút mạnh mẽ.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
                 </div>
                 <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
             </div>
         </section>
 
-        <section id="tv-home-theater">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/tv.svg" alt="Biểu tượng TV">
-                 TV & Rạp hát tại nhà
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">LG OLED G4 Series</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">TV OLED cao cấp nhất của LG, độ sáng vượt trội với công nghệ MLA, chất lượng hình ảnh đỉnh cao.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Samsung S95D QD-OLED</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Công nghệ QD-OLED thế hệ mới, màu sắc rực rỡ, độ sáng cao, lớp phủ chống phản chiếu hiệu quả.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Sony Bravia 9 Mini LED</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">TV Mini LED đầu bảng của Sony, độ sáng cực cao, kiểm soát đèn nền chính xác, xử lý hình ảnh XR Processor.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">NVIDIA Shield TV Pro</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Android TV Box mạnh mẽ nhất, nâng cấp hình ảnh AI, hỗ trợ Dolby Vision/Atmos, chơi game GeForce Now.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section> -->
-
         <section id="pc-accessories">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/mouse-pointer-square.svg" alt="Biểu tượng phụ kiện PC">
-                 Phụ kiện máy tính
+            <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
+                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/mouse-pointer-square.svg" alt="Biểu tượng phụ kiện PC">
+                Phụ kiện máy tính
             </h2>
-             <div class="carousel-container">
+            <div class="carousel-container">
                 <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
                 <div class="carousel">
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Màn hình di động</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Màn hình phụ tiện lợi cho laptop, điện thoại.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134258-7ra0g-m83kl54b6zd309');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Portable+Monitor\' alt=\'Portable Monitor Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Màn hình di động</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Màn hình phụ tiện lợi cho laptop, điện thoại.</p>
                         </div>
                         <a href="https://s.shopee.vn/5VHq8jcDZp" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Chuột VGN VXE R1 SE</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Chuột không dây gaming giá rẻ.</p>
+                    <div class="carousel-item" style="background-image: url('https://owlgaming.vn/wp-content/uploads/2024/03/1-5.jpg');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=VGN+R1+SE\' alt=\'VGN VXE R1 SE Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Chuột VGN VXE R1 SE</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Chuột không dây gaming giá rẻ.</p>
                         </div>
                         <a href="https://s.shopee.vn/5pugXQV0jQ" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Tản nhiệt khí KF400</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Tản nhiệt khí cho CPU.</p>
+                    <div class="carousel-item" style="background-image: url('https://www.blacksheep.vn/html/upload/save_image/0821223306_66c5ec92a3cd6.jpg');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=CPU+Cooler\' alt=\'CPU Cooler Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                             <h3 class="text-lg font-medium">Tản nhiệt khí KF400</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Tản nhiệt khí cho CPU.</p>
                         </div>
                         <a href="https://s.shopee.vn/10pQmg66pW" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Đèn màn hình</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Đèn treo màn hình chống mỏi mắt.</p>
+                    <div class="carousel-item" style="background-image: url('https://mihanoi.vn/wp-content/uploads/2022/07/1-8-510x510.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Monitor+Light+Bar\' alt=\'Monitor Light Bar Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Đèn màn hình</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Đèn treo màn hình chống mỏi mắt.</p>
                         </div>
                         <a href="https://s.shopee.vn/AA3fhYNGGR" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Nguồn máy tính 650W</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Bộ nguồn cho máy tính để bàn.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-luag35tpj673c7@resize_w450_nl.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=650W+PSU\' alt=\'650W PSU Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Nguồn máy tính 650W</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Bộ nguồn cho máy tính để bàn.</p>
                         </div>
                         <a href="https://s.shopee.vn/2fxelt8qYf" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Bàn phím Lucky65</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Bàn phím cơ layout 65%.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2f8ieer0yb67b.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Lucky65\' alt=\'Lucky65 Keyboard Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Bàn phím Lucky65</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Bàn phím cơ layout 65%.</p>
                         </div>
                         <a href="https://s.shopee.vn/10pQoXktRy" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Bàn phím Furycube F75</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Bàn phím cơ layout 75%.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m6t8xj4hps4heb.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Furycube+F75\' alt=\'Furycube F75 Keyboard Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Bàn phím Furycube F75</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Bàn phím cơ layout 75%.</p>
                         </div>
                         <a href="https://s.shopee.vn/3AtvOc0t0C" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Logitech MX Master 3S</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Chuột công thái học đỉnh cao, nút bấm yên tĩnh, cuộn MagSpeed, làm việc hiệu quả trên nhiều thiết bị.</p>
+                    <div class="carousel-item" style="background-image: url('https://resource.logitech.com/content/dam/logitech/en/products/mice/mx-master-3s/gallery/mx-master-3s-mouse-top-view-graphite.png');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=MX+Master+3S\' alt=\'Logitech MX Master 3S Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Logitech MX Master 3S</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Chuột công thái học đỉnh cao, nút bấm yên tĩnh, cuộn MagSpeed, làm việc hiệu quả trên nhiều thiết bị.</p>
                         </div>
                         <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Keychron Q1 Max</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Bàn phím cơ custom cao cấp, vỏ nhôm, gasket mount, kết nối không dây 2.4GHz/Bluetooth, QMK/VIA.</p>
+                    <div class="carousel-item" style="background-image: url('https://cdn.shopify.com/s/files/1/0059/0630/1017/files/Keychron-Q1-Max-QMK-VIA-wireless-custom-mechanical-keyboard-three-quarter-view-shell-white.jpg?v=1694000735');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Keychron+Q1+Max\' alt=\'Keychron Q1 Max Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Keychron Q1 Max</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Bàn phím cơ custom cao cấp, vỏ nhôm, gasket mount, kết nối không dây 2.4GHz/Bluetooth, QMK/VIA.</p>
                         </div>
                         <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                    </div>
+                </div>
                 <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
             </div>
         </section>
 
         <section id="desk-setup">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/armchair.svg" alt="Biểu tượng ghế">
-                 Bàn Ghế & Setup
+            <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
+                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/armchair.svg" alt="Biểu tượng ghế">
+                Bàn Ghế & Setup
             </h2>
-             <div class="carousel-container">
+            <div class="carousel-container">
                 <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
                 <div class="carousel">
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Ghế Công Thái Học Mirai</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Ghế làm việc công thái học.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lu1sghofmo7z8e.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Ergonomic+Chair\' alt=\'Ergonomic Chair Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Ghế Công Thái Học Mirai</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Ghế làm việc công thái học.</p>
                         </div>
                         <a href="https://s.shopee.vn/60E6jmbTzd" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Đồng hồ LED trang trí</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Đồng hồ điện tử để bàn.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/0f50f969d120ac2f9c58b4ab2c179d90');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=LED+Clock\' alt=\'LED Clock Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Đồng hồ LED trang trí</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Đồng hồ điện tử để bàn.</p>
                         </div>
                         <a href="https://s.shopee.vn/60E6jqMnz7" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Pegboard (Bảng lỗ)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Bảng treo đồ trang trí, sắp xếp góc làm việc.</p>
+                    <div class="carousel-item" style="background-image: url('https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lq2rsqzvdadu07@resize_w450_nl.webp');"
+                         onerror="this.style.backgroundImage='none'; this.innerHTML += '<img src=\'https://placehold.co/280x200/83c5be/006d77?text=Pegboard\' alt=\'Pegboard Placeholder\' class=\'fallback-image\'>';">
+                        <div class="carousel-item-content">
+                            <h3 class="text-lg font-medium">Pegboard (Bảng lỗ)</h3>
+                            <p class="text-sm my-2 h-16 overflow-hidden">Bảng treo đồ trang trí, sắp xếp góc làm việc.</p>
                         </div>
                         <a href="https://s.shopee.vn/6Kqx8Xoaby" target="_blank" rel="noopener noreferrer" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
                     </div>
-                    </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section>
-
-        <!-- <section id="other-wearables">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/activity.svg" alt="Biểu tượng thiết bị đeo">
-                 Thiết bị đeo khác
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Oura Ring Gen 3 Horizon</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Nhẫn thông minh theo dõi sức khỏe kín đáo, tập trung vào giấc ngủ, mức độ sẵn sàng và hoạt động.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Ray-Ban Meta Smart Glasses (Wayfarer)</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Kính mắt thời trang tích hợp camera chụp ảnh/quay video, loa nghe nhạc/gọi điện, trợ lý ảo Meta AI.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Whoop 4.0</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Vòng đeo tay theo dõi sức khỏe chuyên sâu 24/7, tập trung vào sự phục hồi, căng thẳng và hiệu suất tập luyện.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Garmin HRM-Pro Plus</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Dây đeo đo nhịp tim chính xác cao, cung cấp dữ liệu động học chạy bộ chi tiết, lưu trữ dữ liệu khi bơi.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Apple AirTag</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Thiết bị định vị nhỏ gọn, giúp tìm kiếm đồ vật thất lạc thông qua mạng lưới Find My của Apple.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
                 </div>
                 <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
             </div>
         </section>
-
-        <section id="e-readers">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/book-open.svg" alt="Biểu tượng máy đọc sách">
-                 Máy đọc sách
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Kindle Paperwhite Signature Edition</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Màn hình E Ink lớn, đèn nền ấm tự điều chỉnh, sạc không dây, chống nước, trải nghiệm đọc tuyệt vời.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Kobo Libra 2</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Thiết kế công thái học với nút bấm vật lý tiện lợi, màn hình E Ink Carta 1200, hỗ trợ nhiều định dạng sách.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Boox Note Air 3 C</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Máy đọc sách/ghi chú màn hình màu E Ink Kaleido 3, chạy Android linh hoạt, hỗ trợ bút stylus.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Kindle Scribe</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Màn hình E Ink lớn 10.2 inch, tập trung vào việc đọc và ghi chú, đi kèm bút stylus.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section>
-
-        <section id="drones">
-             <h2 class="text-3xl font-semibold mb-4 pb-2 border-b flex items-center">
-                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/drone.svg" alt="Biểu tượng drone">
-                 Drone
-            </h2>
-             <div class="carousel-container">
-                <button class="carousel-button left" aria-label="Cuộn trái"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-left.svg" alt="Mũi tên trái"></button>
-                <div class="carousel">
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">DJI Mini 4 Pro</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Drone nhỏ gọn dưới 249g, camera chất lượng cao quay video 4K/60fps HDR, cảm biến đa hướng.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">DJI Air 3</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Hệ thống camera kép (góc rộng và tele 3x), thời gian bay dài, nhiều tính năng thông minh, lựa chọn cân bằng.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                     <div class="carousel-item">
-                          <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">Autel EVO Lite+</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Cảm biến lớn 1 inch cho chất lượng hình ảnh tốt trong điều kiện thiếu sáng, khả năng quay video 6K.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                    <div class="carousel-item">
-                         <div class="carousel-item-content">
-                            <h3 class="text-lg font-medium text-[#006d77]">DJI Mavic 3 Pro</h3>
-                            <p class="text-gray-700 text-sm my-2 h-16 overflow-hidden">Drone cao cấp với hệ thống 3 camera (Hasselblad góc rộng, tele 3x, tele 7x), chất lượng hình ảnh chuyên nghiệp.</p>
-                        </div>
-                        <a href="#" class="detail-button text-sm py-1.5 px-4 rounded-full transition-colors duration-200">Xem chi tiết</a>
-                    </div>
-                </div>
-                <button class="carousel-button right" aria-label="Cuộn phải"><img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/chevron-right.svg" alt="Mũi tên phải"></button>
-            </div>
-        </section> -->
 
     </main>
 
-    <footer class="bg-[#006d77] text-[#edf6f9] p-8 mt-16"> <div class="container mx-auto max-w-7xl text-center">
+    <footer class="bg-[#006d77] text-[#edf6f9] p-8 mt-16">
+        <div class="container mx-auto max-w-7xl text-center">
             <p>&copy; 2025 Giới thiệu bởi Tainguynn</p>
             <p class="text-sm opacity-90 mt-2">AI code ra hết.</p>
         </div>
     </footer>
 
     <script>
-        // Lấy tất cả các nút bấm trái và phải
+        // Get all left and right buttons
         const leftButtons = document.querySelectorAll('.carousel-button.left');
         const rightButtons = document.querySelectorAll('.carousel-button.right');
 
-        // Hàm xử lý cuộn
+        // Scroll handling function
         const handleScroll = (button, direction) => {
-            // Tìm carousel gần nhất với nút được bấm
+            // Find the nearest carousel to the clicked button
             const carousel = button.closest('.carousel-container').querySelector('.carousel');
-            if (!carousel) return; // Thoát nếu không tìm thấy carousel
+            if (!carousel) return; // Exit if carousel not found
 
-            // Tính toán khoảng cách cuộn (chiều rộng 1 item + gap)
-            // Lấy chiều rộng của item đầu tiên làm chuẩn
+            // Calculate scroll distance (width of 1 item + gap)
+            // Get width of the first item as standard
             const firstItem = carousel.querySelector('.carousel-item');
-            const itemWidth = firstItem ? firstItem.offsetWidth : 280; // Chiều rộng mặc định nếu không có item
+            const itemWidth = firstItem ? firstItem.offsetWidth : 280; // Default width if no item
             const style = window.getComputedStyle(carousel);
-            const gap = parseFloat(style.gap) || 16; // Lấy giá trị gap từ CSS hoặc dùng 16px
+            const gap = parseFloat(style.gap) || 16; // Get gap value from CSS or use 16px
             const scrollAmount = itemWidth + gap;
 
-            // Cuộn carousel
+            // Scroll the carousel
             carousel.scrollBy({
                 left: direction === 'left' ? -scrollAmount : scrollAmount,
-                behavior: 'smooth' // Đảm bảo cuộn mượt
+                behavior: 'smooth' // Ensure smooth scrolling
             });
         };
 
-        // Gắn sự kiện click cho các nút trái
+        // Attach click event to left buttons
         leftButtons.forEach(button => {
             button.addEventListener('click', () => handleScroll(button, 'left'));
         });
 
-        // Gắn sự kiện click cho các nút phải
+        // Attach click event to right buttons
         rightButtons.forEach(button => {
             button.addEventListener('click', () => handleScroll(button, 'right'));
         });
+
+        // Add fallback for background images (alternative approach if inline onerror fails)
+        // document.querySelectorAll('.carousel-item[style*="background-image"]').forEach(item => {
+        //     const bgUrlMatch = item.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+        //     if (bgUrlMatch && bgUrlMatch[1]) {
+        //         const img = new Image();
+        //         img.src = bgUrlMatch[1];
+        //         img.onerror = () => {
+        //             item.style.backgroundImage = 'none'; // Remove broken background
+        //             // Optionally add a placeholder background color or image via class/style
+        //             item.style.backgroundColor = '#83c5be'; // Example placeholder color
+        //             // Add placeholder image element if needed
+        //             const placeholderSrc = `https://placehold.co/280x200/83c5be/006d77?text=Image+Error`;
+        //             item.innerHTML += `<img src='${placeholderSrc}' alt='Image Placeholder' class='fallback-image'>`;
+        //         };
+        //     }
+        // });
     </script>
 
 </body>
